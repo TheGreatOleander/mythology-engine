@@ -1,0 +1,14 @@
+{
+  "channel_name": "The Hidden Archive",
+  "publish_mode": "manual_first",
+  "video_provider": "ffmpeg",
+  "audio_provider": "piper",
+  "image_provider": "sdxl",
+  "primary_platforms": [
+    "youtube",
+    "youtube_shorts",
+    "tiktok",
+    "instagram_reels",
+    "podcast"
+  ]
+}
