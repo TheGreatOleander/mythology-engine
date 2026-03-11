@@ -1,0 +1,58 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+
+ENGINE="/sdcard/mythology-engine"
+COUNT="${1:-1}"
+
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
+  echo "Usage:"
+  echo "  myth-series 5"
+  exit 1
+fi
+
+echo "========================================"
+echo "     Mythology Series Runner"
+echo "========================================"
+echo "Requested episodes: $COUNT"
+echo
+
+for ((i=1; i<=COUNT; i++)); do
+  echo "----------------------------------------"
+  echo "Series run $i of $COUNT"
+  echo "----------------------------------------"
+
+  cd "$ENGINE" || exit 1
+
+  selection="$(python tools/series_planner.py)"
+  echo "Selected:"
+  echo "$selection"
+  echo
+
+  myth-run
+
+  python - <<'PY'
+import json
+from pathlib import Path
+
+state_path = Path("/sdcard/mythology-engine/configs/series_state.json")
+series_path = Path("/sdcard/mythology-engine/configs/series.json")
+
+state = json.loads(state_path.read_text(encoding="utf-8"))
+series = json.loads(series_path.read_text(encoding="utf-8"))
+
+episodes = series.get("episodes", [])
+idx = int(state.get("next_episode_index", 0))
+
+if episodes:
+    state["next_episode_index"] = min(idx + 1, len(episodes) - 1)
+
+state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
+print("Advanced series_state.json")
+PY
+
+  echo
+done
+
+echo "========================================"
+echo "Series run complete."
+echo "========================================"

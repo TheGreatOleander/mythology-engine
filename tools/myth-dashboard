@@ -1,0 +1,67 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+ENGINE="/sdcard/mythology-engine"
+FORGE="/sdcard/mythology-forge"
+HERALD="/sdcard/mythology-herald"
+
+latest() {
+  dir="$1"
+  if [ -d "$dir" ]; then
+    ls -1dt "$dir"/* 2>/dev/null | head -n 1
+  fi
+}
+
+count() {
+  dir="$1"
+  if [ -d "$dir" ]; then
+    ls "$dir" 2>/dev/null | wc -l
+  else
+    echo "0"
+  fi
+}
+
+echo
+echo "========================================"
+echo "        Mythology Studio Dashboard"
+echo "========================================"
+echo
+
+echo "Pipeline:"
+echo "Engine → Forge → Herald"
+echo
+
+echo "Last Episode Bundle:"
+latest "$ENGINE/output_archive"
+echo
+
+echo "Last Media Bundle:"
+latest "$FORGE/output_archive"
+echo
+
+echo "Current Promo Output:"
+latest "$HERALD/output"
+echo
+
+echo "Archive Counts:"
+echo "Engine bundles : $(count "$ENGINE/output_archive")"
+echo "Forge bundles  : $(count "$FORGE/output_archive")"
+echo "Herald bundles : $(count "$HERALD/output_archive")"
+echo
+
+echo "Repository Sizes:"
+du -sh "$ENGINE" 2>/dev/null
+du -sh "$FORGE" 2>/dev/null
+du -sh "$HERALD" 2>/dev/null
+echo
+
+echo "Git Branches:"
+for repo in "$ENGINE" "$FORGE" "$HERALD"
+do
+  if [ -d "$repo/.git" ]; then
+    cd "$repo" || continue
+    echo "$repo → $(git branch --show-current)"
+  fi
+done
+
+echo
+echo "========================================"
