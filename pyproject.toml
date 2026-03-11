@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mythology-engine"
+version = "1.2.0"
+description = "Autonomous narrative production studio"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.scripts]
+mythology = "studio.cli.main:main"

@@ -1,0 +1,2 @@
+SAMPLE FRAME PLACEHOLDER
+Use a real image path here when FFmpeg is available with image input support.
