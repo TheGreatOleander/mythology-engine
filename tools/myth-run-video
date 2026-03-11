@@ -1,0 +1,20 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+VIDEO="$1"
+TITLE="$2"
+
+if [ -z "$VIDEO" ]; then
+ echo "Usage: myth-run-video video.mp4 'Title'"
+ exit 1
+fi
+
+cd /sdcard/mythology-forge
+python forge.py --import_video "$VIDEO" --title "$TITLE"
+
+python forge.py
+/sdcard/mythology-forge/send_to_herald.sh
+
+cd /sdcard/mythology-herald
+python herald.py
+
+echo "Manual video pipeline complete."

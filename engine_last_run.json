@@ -1,0 +1,60 @@
+{
+  "episode_result": {
+    "topic": "The Origin of the Impossible Map",
+    "script_text": "Tonight we investigate The Origin of the Impossible Map. Researchers recently uncovered evidence that challenges known exploration routes.",
+    "image_result": {
+      "executed": false,
+      "output_path": "examples/releases/output/episode_frame.png",
+      "mode": "placeholder"
+    },
+    "audio_result": {
+      "provider": "piper",
+      "output_path": "examples/releases/output/narration.wav",
+      "executed": false,
+      "returncode": null,
+      "mode": "placeholder"
+    },
+    "video_result": {
+      "command": [
+        "ffmpeg",
+        "-y",
+        "-loop",
+        "1",
+        "-i",
+        "examples/releases/output/episode_frame.png",
+        "-t",
+        "5",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "examples/releases/output/episode.mp4"
+      ],
+      "output_path": "examples/releases/output/episode.mp4",
+      "executed": false,
+      "returncode": null
+    },
+    "title": {
+      "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",
+      "hook": "Historians can't explain this",
+      "score": 5
+    },
+    "thumbnail": "examples/releases/output/thumbnail.png",
+    "release_package": {
+      "package_dir": "examples/releases",
+      "manifest": {
+        "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",
+        "description": "A documentary investigation into The Origin of the Impossible Map.",
+        "video": "examples/releases/output/episode.mp4",
+        "thumbnail": "examples/releases/output/thumbnail.png",
+        "captions": "examples/releases/output/captions.srt"
+      }
+    }
+  },
+  "run_policy": {
+    "mode": "manual",
+    "action": "episode-test",
+    "publish": false,
+    "operator_policy": "AI prepares assets; human reviews and publishes."
+  }
+}

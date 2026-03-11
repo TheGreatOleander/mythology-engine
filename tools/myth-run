@@ -1,0 +1,25 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+ENGINE_ROOT="/sdcard/mythology-engine"
+FORGE_ROOT="/sdcard/mythology-forge"
+HERALD_ROOT="/sdcard/mythology-herald"
+
+echo "[1/5] Engine"
+cd "$ENGINE_ROOT"
+python runtime/run_studio.py
+
+echo "[2/5] Engine → Forge"
+"$ENGINE_ROOT/send_to_forge.sh"
+
+echo "[3/5] Forge"
+cd "$FORGE_ROOT"
+python forge.py
+
+echo "[4/5] Forge → Herald"
+"$FORGE_ROOT/send_to_herald.sh"
+
+echo "[5/5] Herald"
+cd "$HERALD_ROOT"
+python herald.py
+
+echo "Pipeline complete."

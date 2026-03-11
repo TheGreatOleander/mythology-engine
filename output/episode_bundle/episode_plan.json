@@ -1,0 +1,9 @@
+{
+  "hook": "Historians can't explain this",
+  "beats": [
+    "intro",
+    "investigation",
+    "reveal"
+  ],
+  "target_duration_sec": 60
+}

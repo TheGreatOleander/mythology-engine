@@ -7,7 +7,7 @@ from publishing.provider_layer.image.sdxl_provider import SDXLProvider
 from publishing.provider_layer.audio.piper_provider import PiperProvider
 from production.episode_pipeline import EpisodePipeline
 from release.review.release_review_engine import ReleaseReviewEngine
-from publishing.publish_engine import PublishEngine
+from publishing.publish_engine.publish_engine import PublishEngine
 from publishing.oauth_manager import OAuthManager
 from publishing.scheduler import PublishScheduler
 from audience.channel_brain import ChannelBrain
