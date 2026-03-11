@@ -1,0 +1,77 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+
+MODE="${1:-series}"
+COUNT="${2:-1}"
+DELAY="${3:-0}"
+PUSH_AT_END="${4:-no}"
+
+usage() {
+  echo "Usage:"
+  echo "  myth-orchestrator [series|run] [count] [delay_seconds] [push_at_end]"
+  echo
+  echo "Examples:"
+  echo "  myth-orchestrator series 5 30 no"
+  echo "  myth-orchestrator run 3 10 yes"
+  exit 1
+}
+
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
+  usage
+fi
+
+if ! [[ "$DELAY" =~ ^[0-9]+$ ]]; then
+  usage
+fi
+
+if [ "$MODE" != "series" ] && [ "$MODE" != "run" ]; then
+  usage
+fi
+
+if [ "$PUSH_AT_END" != "yes" ] && [ "$PUSH_AT_END" != "no" ]; then
+  usage
+fi
+
+echo "========================================"
+echo "      Mythology Studio Orchestrator"
+echo "========================================"
+echo "Mode       : $MODE"
+echo "Count      : $COUNT"
+echo "Delay      : $DELAY"
+echo "Push at end: $PUSH_AT_END"
+echo
+
+for ((i=1; i<=COUNT; i++)); do
+  echo "----------------------------------------"
+  echo "Orchestrator run $i of $COUNT"
+  echo "Started: $(date '+%Y-%m-%d %H:%M:%S')"
+  echo "----------------------------------------"
+
+  if [ "$MODE" = "series" ]; then
+    myth-series 1
+  else
+    myth-run
+  fi
+
+  echo
+  echo "Run $i complete."
+  echo
+
+  if [ "$i" -lt "$COUNT" ] && [ "$DELAY" -gt 0 ]; then
+    echo "Sleeping for $DELAY seconds..."
+    sleep "$DELAY"
+    echo
+  fi
+done
+
+if [ "$PUSH_AT_END" = "yes" ]; then
+  echo "----------------------------------------"
+  echo "Pushing repositories..."
+  echo "----------------------------------------"
+  myth-push
+  echo
+fi
+
+echo "========================================"
+echo "Orchestrator complete."
+echo "========================================"

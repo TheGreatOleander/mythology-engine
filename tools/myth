@@ -1,26 +1,91 @@
 #!/data/data/com.termux/files/usr/bin/bash
-while true; do
-  clear
-  echo "=================================="
-  echo "        Mythology Studio"
-  echo "=================================="
-  echo "1) Run full pipeline"
-  echo "2) Import video and run pipeline"
-  echo "3) Run Mythology Engine"
-  echo "4) Run Mythology Forge"
-  echo "5) Run Mythology Herald"
-  echo "6) Studio status"
-  echo "7) Exit"
-  echo ""
-  read -p "Choose an option: " choice
-  case "$choice" in
-    1) myth-run; echo ""; read -p "Press Enter to continue..." ;;
-    2) read -p "Video path: " video_path; read -p "Title: " title; myth-run-video "$video_path" "$title"; echo ""; read -p "Press Enter to continue..." ;;
-    3) myth-engine; echo ""; read -p "Press Enter to continue..." ;;
-    4) myth-forge; echo ""; read -p "Press Enter to continue..." ;;
-    5) myth-herald; echo ""; read -p "Press Enter to continue..." ;;
-    6) myth-status; echo ""; read -p "Press Enter to continue..." ;;
-    7) echo "Exiting Mythology Studio."; exit 0 ;;
-    *) echo "Invalid option."; sleep 1 ;;
-  esac
+
+while true
+do
+clear
+
+echo "========================================"
+echo "        Mythology Studio Console"
+echo "========================================"
+echo
+echo "1) Run Pipeline (Engine → Forge → Herald)"
+echo "2) Run Video Ingest"
+echo "3) Series Episode"
+echo "4) Batch Schedule"
+echo "5) Autopilot"
+echo
+echo "6) Studio Status"
+echo "7) Studio Dashboard"
+echo
+echo "8) Push Repositories"
+echo "9) Clean Archives"
+echo
+echo "0) Exit"
+echo
+read -p "Select option: " choice
+
+case $choice in
+
+1)
+myth-run
+read -p "Press enter..."
+;;
+
+2)
+read -p "Video path: " vid
+read -p "Title: " title
+myth-run-video "$vid" "$title"
+read -p "Press enter..."
+;;
+
+3)
+read -p "Episodes: " num
+myth-series "$num"
+read -p "Press enter..."
+;;
+
+4)
+read -p "Runs: " num
+myth-schedule "$num"
+read -p "Press enter..."
+;;
+
+5)
+read -p "Runs: " num
+read -p "Delay seconds: " delay
+myth-autopilot "$num" "$delay"
+read -p "Press enter..."
+;;
+
+6)
+myth-status
+read -p "Press enter..."
+;;
+
+7)
+myth-dashboard
+read -p "Press enter..."
+;;
+
+8)
+myth-push
+read -p "Press enter..."
+;;
+
+9)
+read -p "Keep how many archives: " keep
+myth-clean "$keep"
+read -p "Press enter..."
+;;
+
+0)
+exit
+;;
+
+*)
+echo "Invalid option"
+sleep 1
+;;
+
+esac
 done
