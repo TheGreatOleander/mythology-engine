@@ -1,0 +1,33 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+
+COUNT="$1"
+
+if [ -z "$COUNT" ]; then
+  echo "Usage:"
+  echo "  myth-schedule 7"
+  exit 1
+fi
+
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
+  echo "COUNT must be a number"
+  exit 1
+fi
+
+echo "========================================"
+echo "     Mythology Studio Batch Schedule"
+echo "========================================"
+echo "Requested runs: $COUNT"
+echo
+
+for ((i=1; i<=COUNT; i++)); do
+  echo "----------------------------------------"
+  echo "Run $i of $COUNT"
+  echo "----------------------------------------"
+  myth-run
+  echo
+done
+
+echo "========================================"
+echo "Batch schedule complete."
+echo "========================================"
