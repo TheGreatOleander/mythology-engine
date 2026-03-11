@@ -1,55 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
-
 ENGINE="/sdcard/mythology-engine/output_archive"
 FORGE="/sdcard/mythology-forge/output_archive"
 HERALD="/sdcard/mythology-herald/output_archive"
-
 KEEP="$1"
-
-if [ -z "$KEEP" ]; then
-  echo "Usage:"
-  echo "  myth-clean 10"
-  echo
-  echo "Meaning:"
-  echo "  keep newest 10 archives"
-  echo "  delete older ones"
-  exit 1
-fi
-
-cleanup() {
-  DIR="$1"
-
-  if [ ! -d "$DIR" ]; then
-    return
-  fi
-
-  COUNT=$(ls -1 "$DIR" 2>/dev/null | wc -l)
-
-  if [ "$COUNT" -le "$KEEP" ]; then
-    echo "$DIR → nothing to clean"
-    return
-  fi
-
-  REMOVE=$(ls -1dt "$DIR"/* | tail -n +$((KEEP+1)))
-
-  for item in $REMOVE
-  do
-    echo "Removing $item"
-    rm -rf "$item"
-  done
-}
-
-echo
-echo "========================================"
-echo "        Mythology Studio Clean"
-echo "========================================"
-echo "Keeping newest $KEEP archives"
-echo
-
-cleanup "$ENGINE"
-cleanup "$FORGE"
-cleanup "$HERALD"
-
-echo
-echo "Clean complete."
-echo "========================================"
+if [ -z "$KEEP" ]; then echo "Usage:"; echo "  myth-clean 10"; echo; echo "Meaning:"; echo "  keep newest 10 archives"; echo "  delete older ones"; exit 1; fi
+cleanup(){ DIR="$1"; if [ ! -d "$DIR" ]; then return; fi; COUNT=$(ls -1 "$DIR" 2>/dev/null | wc -l); if [ "$COUNT" -le "$KEEP" ]; then echo "$DIR → nothing to clean"; return; fi; REMOVE=$(ls -1dt "$DIR"/* | tail -n +$((KEEP+1))); for item in $REMOVE; do echo "Removing $item"; rm -rf "$item"; done; }
+echo; echo "========================================"; echo "        Mythology Studio Clean"; echo "========================================"; echo "Keeping newest $KEEP archives"; echo
+cleanup "$ENGINE"; cleanup "$FORGE"; cleanup "$HERALD"
+echo; echo "Clean complete."; echo "========================================"

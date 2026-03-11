@@ -1,0 +1,37 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -u
+REPOS=(
+  "/sdcard/mythology-engine"
+  "/sdcard/mythology-forge"
+  "/sdcard/mythology-herald"
+)
+timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "========================================"
+echo "     Mythology Studio Push Utility"
+echo "========================================"
+echo "Timestamp: $timestamp"
+echo
+for repo in "${REPOS[@]}"; do
+  echo "----------------------------------------"
+  echo "Repo: $repo"
+  echo "----------------------------------------"
+  if [ ! -d "$repo/.git" ]; then echo "Skipping: not a git repo"; echo; continue; fi
+  cd "$repo" || { echo "Failed to enter repo"; echo; continue; }
+  branch="$(git branch --show-current 2>/dev/null)"; [ -z "$branch" ] && branch="main"
+  echo "Branch: $branch"; echo; echo "Status:"; git status --short; echo
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "Changes detected. Adding and committing..."
+    git add .
+    git commit -m "studio update $timestamp" || { echo "Commit failed or nothing to commit."; }
+  else
+    echo "No local changes to commit."
+  fi
+  echo; echo "Pulling latest with rebase..."
+  if ! git pull --rebase origin "$branch"; then echo "Pull/rebase failed in $repo"; echo "Resolve it manually, then rerun."; echo; continue; fi
+  echo; echo "Pushing..."
+  if ! git push origin "$branch"; then echo "Push failed in $repo"; echo; continue; fi
+  echo; echo "Done: $repo"; echo
+done
+echo "========================================"
+echo "Mythology Studio push pass complete."
+echo "========================================"

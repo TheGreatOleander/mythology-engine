@@ -1,52 +1,26 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -e
-
 COUNT="$1"
 DELAY="${2:-60}"
-
 if [ -z "$COUNT" ]; then
-  echo "Usage:"
-  echo "  myth-autopilot 5 300"
-  echo
-  echo "Meaning:"
-  echo "  5 runs"
-  echo "  300 seconds between runs"
-  exit 1
+  echo "Usage:"; echo "  myth-autopilot 5 300"; echo; echo "Meaning:"; echo "  5 runs"; echo "  300 seconds between runs"; exit 1
 fi
-
-if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
-  echo "COUNT must be a number"
-  exit 1
-fi
-
-if ! [[ "$DELAY" =~ ^[0-9]+$ ]]; then
-  echo "DELAY must be a number"
-  exit 1
-fi
-
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then echo "COUNT must be a number"; exit 1; fi
+if ! [[ "$DELAY" =~ ^[0-9]+$ ]]; then echo "DELAY must be a number"; exit 1; fi
 echo "========================================"
 echo "       Mythology Studio Autopilot"
 echo "========================================"
 echo "Runs : $COUNT"
 echo "Delay: $DELAY seconds"
 echo
-
 for ((i=1; i<=COUNT; i++)); do
   echo "----------------------------------------"
   echo "Autopilot run $i of $COUNT"
   echo "Started: $(date '+%Y-%m-%d %H:%M:%S')"
   echo "----------------------------------------"
-
   myth-run
-
-  if [ "$i" -lt "$COUNT" ]; then
-    echo
-    echo "Sleeping for $DELAY seconds..."
-    sleep "$DELAY"
-    echo
-  fi
+  if [ "$i" -lt "$COUNT" ]; then echo; echo "Sleeping for $DELAY seconds..."; sleep "$DELAY"; echo; fi
 done
-
 echo "========================================"
 echo "Autopilot complete."
 echo "========================================"

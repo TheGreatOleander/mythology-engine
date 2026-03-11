@@ -2,19 +2,14 @@
 set -e
 VIDEO="$1"
 TITLE="$2"
-
-if [ -z "$VIDEO" ]; then
- echo "Usage: myth-run-video video.mp4 'Title'"
- exit 1
-fi
-
-cd /sdcard/mythology-forge
+if [ -z "$VIDEO" ]; then echo "Usage:"; echo "  myth-run-video /sdcard/path/to/video.mp4 \"Title Here\""; exit 1; fi
+cd /sdcard/mythology-forge || exit 1
 python forge.py --import_video "$VIDEO" --title "$TITLE"
-
 python forge.py
-/sdcard/mythology-forge/send_to_herald.sh
-
-cd /sdcard/mythology-herald
+bash "/sdcard/mythology-forge/send_to_herald.sh"
+cd /sdcard/mythology-herald || exit 1
 python herald.py
-
+echo ""
 echo "Manual video pipeline complete."
+echo "Herald output:"
+echo "  /sdcard/mythology-herald/output/promo_bundle"

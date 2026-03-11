@@ -1,46 +1,23 @@
 #!/data/data/com.termux/files/usr/bin/bash
-
 ENGINE="/sdcard/mythology-engine"
 FORGE="/sdcard/mythology-forge"
 HERALD="/sdcard/mythology-herald"
-
-show_latest_dir() {
-  target="$1"
-  if [ -d "$target" ]; then
-    latest="$(ls -1dt "$target"/* 2>/dev/null | head -n 1)"
-    if [ -n "$latest" ]; then
-      echo "$latest"
-    else
-      echo "(none)"
-    fi
-  else
-    echo "(missing)"
-  fi
-}
-
+latest(){ dir="$1"; if [ -d "$dir" ]; then ls -1dt "$dir"/* 2>/dev/null | head -n 1; fi; }
+count(){ dir="$1"; if [ -d "$dir" ]; then ls "$dir" 2>/dev/null | wc -l; else echo "0"; fi; }
 echo "========================================"
 echo "        Mythology Studio Status"
 echo "========================================"
 echo
-
-echo "[Repos]"
-echo "Engine : $ENGINE"
-echo "Forge  : $FORGE"
-echo "Herald : $HERALD"
-echo
-
 echo "[Current Outputs]"
-echo "Engine output : $(show_latest_dir "$ENGINE/output")"
-echo "Forge output  : $(show_latest_dir "$FORGE/output")"
-echo "Herald output : $(show_latest_dir "$HERALD/output")"
+echo "Engine output : $(latest "$ENGINE/output")"
+echo "Forge output  : $(latest "$FORGE/output")"
+echo "Herald output : $(latest "$HERALD/output")"
 echo
-
 echo "[Archives]"
-echo "Engine archive latest : $(show_latest_dir "$ENGINE/output_archive")"
-echo "Forge archive latest  : $(show_latest_dir "$FORGE/output_archive")"
-echo "Herald archive latest : $(show_latest_dir "$HERALD/output_archive")"
+echo "Engine archive latest : $(latest "$ENGINE/output_archive")"
+echo "Forge archive latest  : $(latest "$FORGE/output_archive")"
+echo "Herald archive latest : $(latest "$HERALD/output_archive")"
 echo
-
 echo "[Git Status]"
 for repo in "$ENGINE" "$FORGE" "$HERALD"; do
   echo "---- $repo ----"
@@ -54,5 +31,4 @@ for repo in "$ENGINE" "$FORGE" "$HERALD"; do
   fi
   echo
 done
-
 echo "========================================"

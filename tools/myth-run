@@ -3,23 +3,22 @@ set -e
 ENGINE_ROOT="/sdcard/mythology-engine"
 FORGE_ROOT="/sdcard/mythology-forge"
 HERALD_ROOT="/sdcard/mythology-herald"
-
-echo "[1/5] Engine"
-cd "$ENGINE_ROOT"
-python runtime/run_studio.py
-
-echo "[2/5] Engine → Forge"
-"$ENGINE_ROOT/send_to_forge.sh"
-
-echo "[3/5] Forge"
-cd "$FORGE_ROOT"
+echo "[1/5] Running Mythology Engine..."
+cd "$ENGINE_ROOT" || exit 1
+python -m runtime.run_studio "$@" > engine_last_run.json
+echo "[1.5/5] Exporting episode bundle..."
+python tools/export_episode_bundle.py
+echo "[2/5] Sending episode bundle to Forge..."
+bash "/sdcard/mythology-engine/send_to_forge.sh"
+echo "[3/5] Running Mythology Forge..."
+cd "$FORGE_ROOT" || exit 1
 python forge.py
-
-echo "[4/5] Forge → Herald"
-"$FORGE_ROOT/send_to_herald.sh"
-
-echo "[5/5] Herald"
-cd "$HERALD_ROOT"
+echo "[4/5] Sending media bundle to Herald..."
+bash "/sdcard/mythology-forge/send_to_herald.sh"
+echo "[5/5] Running Mythology Herald..."
+cd "$HERALD_ROOT" || exit 1
 python herald.py
-
-echo "Pipeline complete."
+echo ""
+echo "Mythology pipeline complete."
+echo "Herald output:"
+echo "  /sdcard/mythology-herald/output/promo_bundle"

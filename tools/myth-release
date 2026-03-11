@@ -1,0 +1,17 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+echo "========================================"
+echo "      Mythology Studio Release"
+echo "========================================"
+echo
+echo "[1/3] Running studio pipeline..."
+myth-run
+echo
+echo "[2/3] Running repo push..."
+myth-push
+echo
+echo "[3/3] Release cycle complete."
+echo "Outputs should now exist in:"
+echo "  /sdcard/mythology-herald/output/promo_bundle"
+echo
+echo "GitHub repos should now be updated."
