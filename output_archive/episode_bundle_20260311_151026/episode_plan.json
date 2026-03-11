@@ -1,9 +1,10 @@
 {
   "hook": "Historians can't explain this",
   "beats": [
-    "intro",
+    "hook",
     "investigation",
+    "historical tension",
     "reveal"
   ],
-  "target_duration_sec": 60
+  "target_duration_sec": 180
 }
