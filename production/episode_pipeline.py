@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 
 from publishing.provider_layer.image.title_card_provider import TitleCardProvider
@@ -20,7 +21,6 @@ class EpisodePipeline:
         self.release_builder = ReleasePackageBuilder()
 
     def _render_image(self, title: str, subtitle: str, topic: str, output_path: str):
-        # Preferred path: providers that implement .render(...)
         if self.image_provider and hasattr(self.image_provider, "render"):
             return self.image_provider.render(
                 title=title,
@@ -28,19 +28,64 @@ class EpisodePipeline:
                 output_path=output_path
             )
 
-        # Compatibility path: older providers that implement .generate_image(...)
         if self.image_provider and hasattr(self.image_provider, "generate_image"):
             return self.image_provider.generate_image(
                 prompt=f"{title} -- {subtitle} -- documentary title card for {topic}",
                 output_path=output_path
             )
 
-        # Safe fallback: always produce a real PNG locally
         fallback = TitleCardProvider()
         return fallback.render(
             title=title,
             subtitle=subtitle,
             output_path=output_path
+        )
+
+    def _build_scene_video(self, scene_images, output_video: Path):
+        clips = []
+
+        for img in scene_images:
+            clip = img.with_suffix(".mp4")
+
+            cmd = [
+                "ffmpeg",
+                "-y",
+                "-loop", "1",
+                "-i", str(img),
+                "-t", "4",
+                "-vf", "scale=1280:720",
+                "-pix_fmt", "yuv420p",
+                str(clip)
+            ]
+
+            subprocess.run(
+                cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False
+            )
+
+            clips.append(clip)
+
+        concat_file = output_video.parent / "concat.txt"
+
+        with open(concat_file, "w", encoding="utf-8") as f:
+            for clip in clips:
+                f.write(f"file '{clip.resolve()}'\n")
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-f", "concat",
+                "-safe", "0",
+                "-i", str(concat_file),
+                "-c", "copy",
+                str(output_video)
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False
         )
 
     def run(self, topic="The Origin of the Impossible Map"):
@@ -54,6 +99,7 @@ class EpisodePipeline:
 
         title = self.title_engine.generate(topic)[0]
 
+        # Main frame for thumbnail/upstream export
         image_result = self._render_image(
             title=title["title"],
             subtitle=title["hook"],
@@ -61,16 +107,40 @@ class EpisodePipeline:
             output_path=str(output_root / "episode_frame.png")
         )
 
+        # Multi-scene frames for longer video
+        scene_images = []
+        scene_results = []
+
+        for i in range(1, 4):
+            scene_path = output_root / f"scene_{i:02}.png"
+
+            scene_result = self._render_image(
+                title=title["title"],
+                subtitle=f"Scene {i}",
+                topic=topic,
+                output_path=str(scene_path)
+            )
+
+            scene_images.append(scene_path)
+            scene_results.append(scene_result)
+
         audio_result = self.audio_provider.synthesize(
             text=script_text,
             output_path=str(output_root / "narration.wav")
         )
 
-        video_result = self.video_provider.render_still_video(
-            image_path=image_result["output_path"],
-            output_path=str(output_root / "episode.mp4"),
-            duration=5
+        self._build_scene_video(
+            scene_images=scene_images,
+            output_video=output_root / "episode.mp4"
         )
+
+        video_result = {
+            "command": ["ffmpeg", "concat-scene-build"],
+            "output_path": str(output_root / "episode.mp4"),
+            "executed": (output_root / "episode.mp4").exists(),
+            "returncode": 0 if (output_root / "episode.mp4").exists() else 1,
+            "mode": "scene_concat" if (output_root / "episode.mp4").exists() else "failed",
+        }
 
         thumbnail = self.thumbnail_engine.generate(title["title"], topic)
 
@@ -86,6 +156,7 @@ class EpisodePipeline:
             "topic": topic,
             "script_text": script_text,
             "image_result": image_result,
+            "scene_results": scene_results,
             "audio_result": audio_result,
             "video_result": video_result,
             "title": title,

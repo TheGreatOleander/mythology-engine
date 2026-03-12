@@ -7,6 +7,23 @@
       "output_path": "examples/releases/output/episode_frame.png",
       "mode": "title_card"
     },
+    "scene_results": [
+      {
+        "executed": true,
+        "output_path": "examples/releases/output/scene_01.png",
+        "mode": "title_card"
+      },
+      {
+        "executed": true,
+        "output_path": "examples/releases/output/scene_02.png",
+        "mode": "title_card"
+      },
+      {
+        "executed": true,
+        "output_path": "examples/releases/output/scene_03.png",
+        "mode": "title_card"
+      }
+    ],
     "audio_result": {
       "provider": "piper",
       "output_path": "examples/releases/output/narration.wav",
@@ -17,23 +34,12 @@
     "video_result": {
       "command": [
         "ffmpeg",
-        "-y",
-        "-loop",
-        "1",
-        "-i",
-        "examples/releases/output/episode_frame.png",
-        "-t",
-        "5",
-        "-c:v",
-        "libx264",
-        "-pix_fmt",
-        "yuv420p",
-        "examples/releases/output/episode.mp4"
+        "concat-scene-build"
       ],
       "output_path": "examples/releases/output/episode.mp4",
       "executed": true,
       "returncode": 0,
-      "mode": "ffmpeg"
+      "mode": "scene_concat"
     },
     "title": {
       "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",
