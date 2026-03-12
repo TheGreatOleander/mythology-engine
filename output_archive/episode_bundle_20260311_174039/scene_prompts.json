@@ -1,0 +1,17 @@
+[
+  {
+    "scene_id": "scene_01",
+    "prompt": "mysterious archival chamber, impossible map glowing on stone table",
+    "narration": "Tonight we investigate The Origin of the Impossible Map. Researchers recently uncovered evidence that challenges known e"
+  },
+  {
+    "scene_id": "scene_02",
+    "prompt": "close-up of parchment map with unknown sigils and weathered edges",
+    "narration": "The object appears authentic, but nothing about it should exist."
+  },
+  {
+    "scene_id": "scene_03",
+    "prompt": "historian and cartographer studying impossible map under cinematic light",
+    "narration": "Experts disagree about its origin, age, and purpose."
+  }
+]

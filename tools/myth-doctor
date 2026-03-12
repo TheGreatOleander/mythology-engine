@@ -1,0 +1,106 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+ENGINE="/sdcard/mythology-engine"
+FORGE="/sdcard/mythology-forge"
+HERALD="/sdcard/mythology-herald"
+
+ok() { echo "[OK]   $1"; }
+warn() { echo "[WARN] $1"; }
+fail() { echo "[FAIL] $1"; }
+
+latest_archive() {
+  dir="$1"
+  ls -1dt "$dir"/* 2>/dev/null | head -n 1
+}
+
+echo "========================================"
+echo "        Mythology Studio Doctor v2"
+echo "========================================"
+echo
+
+echo "[Paths]"
+for repo in "$ENGINE" "$FORGE" "$HERALD"
+do
+  if [ -d "$repo" ]; then
+    ok "$repo present"
+  else
+    fail "$repo missing"
+  fi
+done
+echo
+
+echo "[Commands]"
+for cmd in python git bash
+do
+  command -v "$cmd" >/dev/null && ok "$cmd available" || fail "$cmd missing"
+done
+
+if command -v ffmpeg >/dev/null
+then
+  ok "ffmpeg available"
+else
+  warn "ffmpeg missing (video generation will remain placeholder)"
+fi
+echo
+
+echo "[Output Bundles]"
+
+# ENGINE
+if [ -f "$ENGINE/output/episode_bundle/bundle.json" ]
+then
+  ok "Engine bundle.json present (live output)"
+else
+  archive=$(latest_archive "$ENGINE/output_archive")
+  if [ -n "$archive" ]
+  then
+    ok "Engine bundle archived: $(basename "$archive")"
+  else
+    warn "Engine bundle not found"
+  fi
+fi
+
+# FORGE
+if [ -f "$FORGE/output/media_bundle/media_manifest.json" ]
+then
+  ok "Forge media_manifest.json present (live output)"
+else
+  archive=$(latest_archive "$FORGE/output_archive")
+  if [ -n "$archive" ]
+  then
+    ok "Forge media bundle archived: $(basename "$archive")"
+  else
+    warn "Forge media bundle not found"
+  fi
+fi
+
+# HERALD
+if [ -f "$HERALD/output/promo_bundle/promo_manifest.json" ]
+then
+  ok "Herald promo_manifest.json present"
+else
+  archive=$(latest_archive "$HERALD/output_archive")
+  if [ -n "$archive" ]
+  then
+    ok "Herald promo archived: $(basename "$archive")"
+  else
+    warn "Herald promo bundle not found"
+  fi
+fi
+
+echo
+echo "[Git Status]"
+for repo in "$ENGINE" "$FORGE" "$HERALD"
+do
+  if [ -d "$repo/.git" ]
+  then
+    branch=$(git -C "$repo" branch --show-current 2>/dev/null)
+    ok "$repo git repo (branch: $branch)"
+  else
+    warn "$repo not a git repo"
+  fi
+done
+
+echo
+echo "========================================"
+echo "Doctor scan complete."
+echo "========================================"

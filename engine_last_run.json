@@ -3,9 +3,9 @@
     "topic": "The Origin of the Impossible Map",
     "script_text": "Tonight we investigate The Origin of the Impossible Map. Researchers recently uncovered evidence that challenges known exploration routes.",
     "image_result": {
-      "executed": false,
+      "executed": true,
       "output_path": "examples/releases/output/episode_frame.png",
-      "mode": "placeholder"
+      "mode": "title_card"
     },
     "audio_result": {
       "provider": "piper",
@@ -31,8 +31,9 @@
         "examples/releases/output/episode.mp4"
       ],
       "output_path": "examples/releases/output/episode.mp4",
-      "executed": false,
-      "returncode": null
+      "executed": true,
+      "returncode": 0,
+      "mode": "ffmpeg"
     },
     "title": {
       "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",

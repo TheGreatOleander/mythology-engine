@@ -1,0 +1,40 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+ENGINE="/sdcard/mythology-engine"
+FORGE="/sdcard/mythology-forge"
+HERALD="/sdcard/mythology-herald"
+
+LOG_DIR="$ENGINE/logs"
+LOG_FILE="$LOG_DIR/mythology_runs.log"
+
+latest_archive() {
+  dir="$1"
+  if [ -d "$dir" ]; then
+    ls -1dt "$dir"/* 2>/dev/null | head -n 1
+  fi
+}
+
+timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+engine_archive="$(latest_archive "$ENGINE/output_archive")"
+forge_archive="$(latest_archive "$FORGE/output_archive")"
+
+if [ -f "$HERALD/output/promo_bundle/promo_manifest.json" ]; then
+  herald_state="live"
+else
+  herald_state="missing"
+fi
+
+mkdir -p "$LOG_DIR"
+
+cat >> "$LOG_FILE" <<EOF
+========================================
+timestamp: $timestamp
+engine_archive: ${engine_archive:-none}
+forge_archive: ${forge_archive:-none}
+herald_output: $herald_state
+cwd: $(pwd)
+========================================
+EOF
+
+echo "Logged run to:"
+echo "  $LOG_FILE"

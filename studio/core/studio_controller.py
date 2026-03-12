@@ -3,7 +3,7 @@ from studio.providers.provider_registry import ProviderRegistry
 from studio.modes.mode_runner import run_mode
 from core.orchestrator.master_orchestrator import MasterOrchestrator
 from publishing.provider_layer.video.ffmpeg_provider import FFmpegProvider
-from publishing.provider_layer.image.sdxl_provider import SDXLProvider
+from publishing.provider_layer.image.title_card_provider import TitleCardProvider
 from publishing.provider_layer.audio.piper_provider import PiperProvider
 from production.episode_pipeline import EpisodePipeline
 from release.review.release_review_engine import ReleaseReviewEngine
@@ -11,6 +11,7 @@ from publishing.publish_engine.publish_engine import PublishEngine
 from publishing.oauth_manager import OAuthManager
 from publishing.scheduler import PublishScheduler
 from audience.channel_brain import ChannelBrain
+
 
 class StudioController:
     def __init__(self, profile_path="configs/studio_profile.json", secrets_path="configs/secrets.json"):
@@ -21,16 +22,13 @@ class StudioController:
         self.orchestrator = MasterOrchestrator()
 
         self.ffmpeg = FFmpegProvider()
-        self.sdxl = SDXLProvider(
-            api_url=self.secrets.get("image_provider_url"),
-            api_key=self.secrets.get("image_provider_key")
-        )
+        self.image_provider = TitleCardProvider()
         self.piper = PiperProvider(
             model_path=self.secrets.get("audio_model_path", "models/en_US-lessac-medium.onnx")
         )
 
         self.pipeline = EpisodePipeline(
-            image_provider=self.sdxl,
+            image_provider=self.image_provider,
             audio_provider=self.piper,
             video_provider=self.ffmpeg
         )
