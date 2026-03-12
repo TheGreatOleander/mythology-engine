@@ -1,0 +1,92 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+
+ENGINE="/sdcard/mythology-engine"
+FORGE="/sdcard/mythology-forge"
+HERALD="/sdcard/mythology-herald"
+
+STAMP="$(date '+%Y%m%d_%H%M%S')"
+KEEP="${1:-10}"
+
+if ! [[ "$KEEP" =~ ^[0-9]+$ ]]; then
+  echo "Usage:"
+  echo "  myth-pack [keep_count]"
+  echo
+  echo "Example:"
+  echo "  myth-pack 10"
+  exit 1
+fi
+
+pack_repo() {
+  REPO_PATH="$1"
+  PREFIX="$2"
+
+  REPO_NAME="$(basename "$REPO_PATH")"
+  ARCHIVE_DIR="$REPO_PATH/archive"
+  TMP_PARENT="/sdcard/.myth_pack_tmp"
+  TMP_DIR="$TMP_PARENT/$REPO_NAME"
+  ZIP_NAME="${PREFIX}_${STAMP}.zip"
+  ZIP_PATH="$ARCHIVE_DIR/$ZIP_NAME"
+
+  mkdir -p "$ARCHIVE_DIR"
+  rm -rf "$TMP_DIR"
+  mkdir -p "$TMP_PARENT"
+
+  echo "Packing $REPO_NAME..."
+
+  cp -r "$REPO_PATH" "$TMP_DIR"
+
+  rm -rf "$TMP_DIR/.git"
+  find "$TMP_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+  find "$TMP_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
+
+  cd "$TMP_PARENT" || exit 1
+  rm -f "$ZIP_PATH"
+  zip -r "$ZIP_PATH" "$REPO_NAME" >/dev/null
+
+  echo "  created: $ZIP_PATH"
+
+  rm -rf "$TMP_DIR"
+
+  cleanup_old_zips "$ARCHIVE_DIR" "$PREFIX"
+}
+
+cleanup_old_zips() {
+  ARCHIVE_DIR="$1"
+  PREFIX="$2"
+
+  mapfile -t MATCHES < <(ls -1dt "$ARCHIVE_DIR"/"${PREFIX}"_*.zip 2>/dev/null || true)
+
+  COUNT="${#MATCHES[@]}"
+
+  if [ "$COUNT" -le "$KEEP" ]; then
+    echo "  keeping all $COUNT snapshot zips"
+    return
+  fi
+
+  echo "  pruning old snapshot zips (keeping newest $KEEP)..."
+
+  for ((i=KEEP; i<COUNT; i++)); do
+    OLD_ZIP="${MATCHES[$i]}"
+    echo "    removing: $OLD_ZIP"
+    rm -f "$OLD_ZIP"
+  done
+}
+
+echo "========================================"
+echo "  Mythology Studio Smart Pack Utility"
+echo "========================================"
+echo "Keep newest snapshot zips: $KEEP"
+echo
+
+pack_repo "$ENGINE" "Mythology_Engine_snapshot"
+echo
+pack_repo "$FORGE" "Mythology_Forge_snapshot"
+echo
+pack_repo "$HERALD" "Mythology_Herald_snapshot"
+
+rm -rf /sdcard/.myth_pack_tmp
+
+echo
+echo "All repo zips created and pruned."
+echo "========================================"
