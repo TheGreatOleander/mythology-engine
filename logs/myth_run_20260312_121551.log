@@ -1,0 +1,53 @@
+========================================
+ Mythology Studio Run
+========================================
+Timestamp: 2026-03-12 12:15:51
+Log file : /sdcard/mythology-engine/logs/myth_run_20260312_121551.log
+
+[1/5] Running Mythology Engine...
+[EpisodePipeline] Output root: examples/releases/output
+[EpisodePipeline] Script text: Tonight we investigate The Origin of the Impossible Map. Researchers recently uncovered evidence that challenges known exploration routes.
+[EpisodePipeline] Title result: {'title': "The Origin of the Impossible Map — Historians Can't Explain This", 'hook': "Historians can't explain this", 'score': 5}
+[EpisodePipeline] Rendering image -> examples/releases/output/episode_frame.png
+[EpisodePipeline] Image render result: {'executed': True, 'output_path': 'examples/releases/output/episode_frame.png', 'mode': 'title_card'}
+[EpisodePipeline] Rendering image -> examples/releases/output/scene_01.png
+[EpisodePipeline] Image render result: {'executed': True, 'output_path': 'examples/releases/output/scene_01.png', 'mode': 'title_card'}
+[EpisodePipeline] Rendering image -> examples/releases/output/scene_02.png
+[EpisodePipeline] Image render result: {'executed': True, 'output_path': 'examples/releases/output/scene_02.png', 'mode': 'title_card'}
+[EpisodePipeline] Rendering image -> examples/releases/output/scene_03.png
+[EpisodePipeline] Image render result: {'executed': True, 'output_path': 'examples/releases/output/scene_03.png', 'mode': 'title_card'}
+[EpisodePipeline] Synthesizing audio -> examples/releases/output/narration.wav
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/storage/emulated/0/mythology-engine/runtime/run_studio.py", line 4, in <module>
+    main()
+    ~~~~^^
+  File "/storage/emulated/0/mythology-engine/studio/cli/main.py", line 20, in main
+    result = controller.run(mode=args.mode, action=args.action)
+  File "/storage/emulated/0/mythology-engine/studio/core/studio_controller.py", line 46, in run
+    result = self.pipeline.run(topic="The Origin of the Impossible Map")
+  File "/storage/emulated/0/mythology-engine/production/episode_pipeline.py", line 214, in run
+    audio_result = self.audio_provider.synthesize(
+        text=script_text,
+        output_path=str(audio_path)
+    )
+  File "/storage/emulated/0/mythology-engine/publishing/provider_layer/audio/piper_provider.py", line 135, in synthesize
+    result = self._synthesize_with_termux_tts(text, out)
+  File "/storage/emulated/0/mythology-engine/publishing/provider_layer/audio/piper_provider.py", line 64, in _synthesize_with_termux_tts
+    proc = subprocess.run(
+        ["termux-tts-speak", text],
+        capture_output=True,
+        text=True
+    )
+  File "/data/data/com.termux/files/usr/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/data/com.termux/files/usr/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/data/com.termux/files/usr/lib/python3.13/subprocess.py", line 2152, in _communicate
+    ready = selector.select(timeout)
+  File "/data/data/com.termux/files/usr/lib/python3.13/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt

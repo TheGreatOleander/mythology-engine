@@ -29,14 +29,15 @@
       "output_path": "examples/releases/output/narration.wav",
       "executed": false,
       "returncode": null,
-      "mode": "placeholder"
+      "mode": "audio_disabled",
+      "valid_wav": false
     },
     "video_result": {
       "command": [
         "ffmpeg",
         "concat-scene-build"
       ],
-      "output_path": "examples/releases/output/episode.mp4",
+      "output_path": "examples/releases/output/episode_silent.mp4",
       "executed": true,
       "returncode": 0,
       "mode": "scene_concat"
@@ -52,7 +53,7 @@
       "manifest": {
         "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",
         "description": "A documentary investigation into The Origin of the Impossible Map.",
-        "video": "examples/releases/output/episode.mp4",
+        "video": "examples/releases/output/episode_silent.mp4",
         "thumbnail": "examples/releases/output/thumbnail.png",
         "captions": "examples/releases/output/captions.srt"
       }

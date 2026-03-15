@@ -1,0 +1,16 @@
+{
+  "bundle_version": "1.1",
+  "project": "mythology-engine",
+  "episode_id": "engine_run",
+  "title": "The Origin of the Impossible Map \u2014 Historians Can't Explain This",
+  "topic": "The Origin of the Impossible Map",
+  "paths": {
+    "script": "script.txt",
+    "metadata": "metadata.json",
+    "scene_prompts": "scene_prompts.json",
+    "episode_plan": "episode_plan.json",
+    "episode_frame": "episode_frame.png",
+    "episode_video": "episode.mp4",
+    "narration": "narration.wav"
+  }
+}

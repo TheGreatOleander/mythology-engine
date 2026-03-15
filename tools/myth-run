@@ -5,6 +5,21 @@ ENGINE_ROOT="/sdcard/mythology-engine"
 FORGE_ROOT="/sdcard/mythology-forge"
 HERALD_ROOT="/sdcard/mythology-herald"
 
+LOG_DIR="/sdcard/mythology-engine/logs"
+STAMP="$(date '+%Y%m%d_%H%M%S')"
+LOG_FILE="$LOG_DIR/myth_run_${STAMP}.log"
+
+mkdir -p "$LOG_DIR"
+
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "========================================"
+echo " Mythology Studio Run"
+echo "========================================"
+echo "Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "Log file : $LOG_FILE"
+echo
+
 echo "[1/5] Running Mythology Engine..."
 cd "$ENGINE_ROOT" || exit 1
 python -m runtime.run_studio "$@" > engine_last_run.json
@@ -31,7 +46,10 @@ echo "Mythology pipeline complete."
 echo "Herald output:"
 echo "  /sdcard/mythology-herald/output/promo_bundle"
 
-# Record successful run
 if command -v myth-log >/dev/null 2>&1; then
     myth-log
 fi
+
+echo
+echo "Master log saved to:"
+echo "  $LOG_FILE"
